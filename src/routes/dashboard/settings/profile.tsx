@@ -111,7 +111,7 @@ function ProfileForm() {
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
           <div className="relative w-fit">
             <Avatar className="size-32">
-              <AvatarImage src={user.profileImg} />
+              <AvatarImage src={user.profileImg ?? undefined} />
               <AvatarFallback>{getInitials(user.fullname)}</AvatarFallback>
             </Avatar>
             <Button

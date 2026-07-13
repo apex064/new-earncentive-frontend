@@ -40,7 +40,7 @@ const formSchema = z.object({
 export type SignUpFormData = z.infer<typeof formSchema>;
 
 export default function SignupForm({
-  plan,
+  plan: _plan,
   useOneTap = true,
 }: {
   plan?: PlanName;

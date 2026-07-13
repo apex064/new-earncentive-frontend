@@ -1,7 +1,7 @@
 // Real-time WebSocket connections for balance & notifications
 // Mirrors crypt's logged-in-header WebSocket implementation
 
-import { useEffect, useRef, useCallback, useState, useSyncExternalStore } from "react";
+import { useEffect, useRef, useCallback, useSyncExternalStore } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { useAuthStore } from "@/store/auth-store";
 import { NOTIFICATIONS_QUERY_KEY } from "@/hooks/use-notifications";

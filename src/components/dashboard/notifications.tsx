@@ -1,4 +1,4 @@
-import { CheckCheck, Loader } from "lucide-react";
+import { CheckCheck } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 import {
   Card,

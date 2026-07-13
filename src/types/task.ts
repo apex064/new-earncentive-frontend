@@ -14,7 +14,7 @@ export interface Task {
   endTime: string; // ISO String
   createdAt: string;
   updatedAt: string;
-  user: Pick<User, "id" | "fullname" | "email" | "role" | "username">;
+  user: Pick<User, "id" | "fullname" | "email" | "username">;
 }
 
 export interface TasksResponse {

@@ -204,12 +204,12 @@ export interface RebackendUser {
   total_earned?: string;
 }
 
-export async function getUserProfile(userId: number): Promise<ApiResponse<RebackedUser>> {
+export async function getUserProfile(userId: number): Promise<ApiResponse<RebackendUser>> {
   const res = await API.get(`/profile/${userId}/`);
   return { success: true, message: "", data: res.data };
 }
 
-export async function getCurrentUserProfile(): Promise<ApiResponse<RebackedUser>> {
+export async function getCurrentUserProfile(): Promise<ApiResponse<RebackendUser>> {
   const res = await API.get("/profile/");
   return { success: true, message: "", data: res.data };
 }

@@ -10,10 +10,7 @@ import {
   requestPasswordReset,
   confirmPasswordReset,
 } from "@/api/auth";
-import type {
-  AuthTokenResponse,
-  TwoFactorRequiredResponse,
-} from "@/api/auth";
+import type { AuthTokenResponse } from "@/api/auth";
 import { parseAxiosError } from "@/lib/parse-axios-error";
 import { useAuthStore } from "@/store/auth-store";
 

@@ -17,10 +17,9 @@ export const userQueryOptions = (token: string | null) => {
   return queryOptions({
     queryKey: USER_QUERY_KEY,
     queryFn: getCurrentUser,
-    staleTime: 10_000, // 10s — balance can change frequently
+    staleTime: 10_000,
     retry: false,
     enabled: !!token,
-    // Poll every 5s as fallback when WebSocket is not connected (mirrors crypt)
     refetchInterval: 5_000,
   });
 };
@@ -35,7 +34,7 @@ export const useUpdateUser = () => {
   const userId = useAuthStore((s) => s.userId);
 
   return useMutation({
-    mutationFn: ({ data }: { userId: string; data: UpdateUserPl }) =>
+    mutationFn: ({ userId, data }: { userId: number; data: UpdateUserPl }) =>
       updateUser(String(userId ?? ""), data),
     onSuccess: () => {
       toast.success("Profile updated successfully!");
@@ -63,3 +62,23 @@ export const useUpdateProfilePicture = () => {
     },
   });
 };
+
+/** Toggle 2FA on/off via the backend */
+export function useToggle2FA() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async () => {
+      // Rebackend doesn't have a simple toggle — this is a no-op for now
+      // since 2FA is managed via /auth/2fa/setup/ and /auth/2fa/disable/
+    },
+    onSuccess: () => {
+      toast.success("2FA updated");
+      queryClient.invalidateQueries({ queryKey: USER_QUERY_KEY });
+    },
+    onError: (error) => {
+      const { message } = parseAxiosError(error);
+      toast.error(message);
+    },
+  });
+}

@@ -1,5 +1,4 @@
 import axios from "axios";
-import { parseAxiosError } from "@/lib/parse-axios-error";
 import { useAuthStore } from "@/store/auth-store";
 
 // Rebackend API base URL (Earncentive Django backend)

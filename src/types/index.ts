@@ -36,6 +36,7 @@ export type User = {
   faucet_earnings?: string;
   qualifying_earnings?: number;
   can_withdraw?: boolean;
+  twoFactorEnabled?: boolean;
   chess_rating?: number;
   chess_games_played?: number;
   chess_games_won?: number;

@@ -1,5 +1,5 @@
 // ─── Single Auth + User API for Rebackend (Earncentive Django Backend) ───
-// All auth & user endpoints in one file. Uses Token-based auth (not JWT Bearer).
+// All auth, user, and notification endpoints in one file.
 
 import { API } from "@/api/axios";
 import type { ApiResponse } from "@/types";
@@ -80,10 +80,29 @@ export interface BanResponse {
 }
 
 // ═══════════════════════════════════════════════════════════════
+// Notification Types
+// ═══════════════════════════════════════════════════════════════
+
+export interface NotificationItem {
+  id: number;
+  action: string;
+  category: string;
+  is_read: boolean;
+  created_at: string;
+  action_data?: Record<string, unknown> | null;
+}
+
+export interface PaginatedNotifications {
+  count: number;
+  next: string | null;
+  previous: string | null;
+  results: NotificationItem[];
+}
+
+// ═══════════════════════════════════════════════════════════════
 // Auth Endpoints
 // ═══════════════════════════════════════════════════════════════
 
-/** Register a new user */
 export async function registerUser(data: RegisterPayload): Promise<AuthTokenResponse> {
   const res = await API.post<AuthTokenResponse>("/auth/register/", data, {
     skipAuthRefresh: true,
@@ -91,7 +110,6 @@ export async function registerUser(data: RegisterPayload): Promise<AuthTokenResp
   return res.data;
 }
 
-/** Login with email + password */
 export async function loginUser(
   data: LoginPayload,
 ): Promise<AuthTokenResponse | TwoFactorRequiredResponse> {
@@ -103,7 +121,6 @@ export async function loginUser(
   return res.data;
 }
 
-/** Google OAuth login/register */
 export async function googleAuth(data: GoogleAuthPayload): Promise<GoogleAuthResponse> {
   const res = await API.post<GoogleAuthResponse>("/auth/google/", data, {
     skipAuthRefresh: true,
@@ -111,12 +128,10 @@ export async function googleAuth(data: GoogleAuthPayload): Promise<GoogleAuthRes
   return res.data;
 }
 
-/** Logout — invalidates the token server-side */
 export async function logoutUser(): Promise<void> {
   await API.post("/auth/logout/");
 }
 
-/** Request password reset email */
 export async function requestPasswordReset(
   data: PasswordResetRequestPayload,
 ): Promise<{ message?: string; detail?: string; error?: string }> {
@@ -126,7 +141,6 @@ export async function requestPasswordReset(
   return res.data;
 }
 
-/** Confirm password reset with token from email */
 export async function confirmPasswordReset(
   data: PasswordResetConfirmPayload,
 ): Promise<{ message?: string; error?: string }> {
@@ -136,7 +150,6 @@ export async function confirmPasswordReset(
   return res.data;
 }
 
-/** Verify email with token from email */
 export async function verifyEmail(
   token: string,
 ): Promise<{ message?: string; error?: string }> {
@@ -148,7 +161,6 @@ export async function verifyEmail(
   return res.data;
 }
 
-/** Verify 2FA code during login */
 export async function verifyTwoFactor(
   data: TwoFactorVerifyPayload,
 ): Promise<AuthTokenResponse> {
@@ -158,13 +170,11 @@ export async function verifyTwoFactor(
   return res.data;
 }
 
-/** Check 2FA status for current user */
 export async function getTwoFactorStatus(): Promise<{ enabled: boolean }> {
   const res = await API.get<{ enabled: boolean }>("/auth/2fa/status/");
   return res.data;
 }
 
-/** Validate a referral code */
 export async function validateReferralCode(
   code: string,
 ): Promise<{ valid: boolean; username?: string; error?: string }> {
@@ -183,6 +193,7 @@ export interface RebackendUser {
   first_name: string;
   last_name: string;
   profile_picture?: string | null;
+  profile_picture_url?: string | null;
   is_admin: boolean;
   is_staff: boolean;
   is_superuser: boolean;
@@ -193,16 +204,39 @@ export interface RebackendUser {
   total_earned?: string;
 }
 
-/** Fetch current user's profile by ID */
 export async function getUserProfile(userId: number): Promise<ApiResponse<RebackedUser>> {
   const res = await API.get(`/profile/${userId}/`);
   return { success: true, message: "", data: res.data };
 }
 
-/** Fetch current user's profile (no ID required — gets from token context) */
 export async function getCurrentUserProfile(): Promise<ApiResponse<RebackedUser>> {
-  // The rebackend expects user ID. We get it from the store.
-  // This is called via the hook which injects the user ID.
-  const res = await API.get("/profile/me/");
+  const res = await API.get("/profile/");
   return { success: true, message: "", data: res.data };
+}
+
+// ═══════════════════════════════════════════════════════════════
+// Notification Endpoints
+// ═══════════════════════════════════════════════════════════════
+
+/** Fetch paginated notifications for the current user */
+export async function fetchNotifications(
+  filterBy: "all" | "read" | "unread" = "all",
+  offset = 0,
+  limit = 20,
+): Promise<PaginatedNotifications> {
+  const res = await API.get<PaginatedNotifications>("/notifications/", {
+    params: { filter_by: filterBy, offset, limit },
+  });
+  return res.data;
+}
+
+/** Mark a single notification as read */
+export async function markNotificationRead(notificationId: number): Promise<void> {
+  await API.post(`/notifications/mark-read/${notificationId}/`);
+}
+
+/** Mark all notifications as read */
+export async function markAllNotificationsRead(): Promise<{ status: string }> {
+  const res = await API.post<{ status: string }>("/notifications/mark-all-read/");
+  return res.data;
 }

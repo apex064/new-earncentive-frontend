@@ -16,6 +16,7 @@ import {
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { useAuthStore } from "@/store/auth-store";
+import { useRealtimeConnections } from "@/hooks/use-realtime";
 
 export const Route = createFileRoute("/dashboard")({
   beforeLoad: async () => {
@@ -31,6 +32,9 @@ export const Route = createFileRoute("/dashboard")({
 function Dashboard() {
   const isAuthed = useAuthStore((s) => s.isAuthed);
   const isMobile = useIsMobile();
+
+  // Mount real-time WebSocket connections (balance + notifications)
+  useRealtimeConnections();
 
   if (!isAuthed) {
     return <Navigate to="/signin" />;

@@ -17,9 +17,11 @@ export const userQueryOptions = (token: string | null) => {
   return queryOptions({
     queryKey: USER_QUERY_KEY,
     queryFn: getCurrentUser,
-    staleTime: 5 * 60 * 1000, // 5 minutes (profile changes less often)
+    staleTime: 10_000, // 10s — balance can change frequently
     retry: false,
     enabled: !!token,
+    // Poll every 5s as fallback when WebSocket is not connected (mirrors crypt)
+    refetchInterval: 5_000,
   });
 };
 

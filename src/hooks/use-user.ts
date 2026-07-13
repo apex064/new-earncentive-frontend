@@ -31,7 +31,6 @@ export const useUser = () => {
 
 export const useUpdateUser = () => {
   const queryClient = useQueryClient();
-  const _userId = useAuthStore((s) => s.userId);
 
   return useMutation({
     mutationFn: ({ userId, data }: { userId: number; data: UpdateUserPl }) =>

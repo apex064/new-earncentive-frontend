@@ -27,30 +27,28 @@ function Navbar() {
   const user = userResponse?.data;
   const { mutate: logout, isPending } = useLogoutMutation();
 
-  // Compute profile image URL — uses resolved URL from backend
   const profileImageUrl = resolveProfileImageUrl(
     user?.profile_picture_url ?? null,
     user?.profile_picture ?? null,
   );
 
-  if (isLoading) {
-    return <NavbarSkeleton />;
-  }
-
-  if (!user) {
-    return null;
-  }
+  if (isLoading) return <NavbarSkeleton />;
+  if (!user) return null;
 
   return (
-    <nav className="bg-sidebar sticky top-0 z-50 flex h-16 w-full shrink-0 items-center gap-6 border-b px-4">
+    <nav className="bg-sidebar sticky top-0 z-50 flex h-16 w-full shrink-0 items-center gap-3 border-b px-4">
+      {/* Left: sidebar trigger + breadcrumb (desktop only) */}
       <div className="flex items-center gap-2">
         <SidebarTrigger className="-ml-1 rotate-180 md:rotate-[initial]" />
-        <Separator orientation="vertical" className="mr-2 h-4!" />
-        <DashboardBreadcrumb />
+        <Separator orientation="vertical" className="mr-2 hidden h-4! md:block" />
+        <div className="hidden md:block">
+          <DashboardBreadcrumb />
+        </div>
       </div>
 
+      {/* Right: balance pill, notifications, avatar */}
       <div className="ml-auto flex items-center gap-3">
-        {/* Balance Pill — visible on all screen sizes */}
+        {/* Balance Pill — always visible */}
         <Popover>
           <PopoverTrigger asChild>
             <button type="button">
@@ -65,7 +63,7 @@ function Navbar() {
           </PopoverContent>
         </Popover>
 
-        {/* Mobile sidebar trigger (contains notifications, calendar) */}
+        {/* Mobile sidebar trigger (notifications, calendar) */}
         <MobileSecondarySidebar />
 
         {/* Profile Avatar + Dropdown */}
@@ -80,7 +78,6 @@ function Navbar() {
           </Box>
           <PopoverContent className="w-80!" align="end">
             <div className="grid gap-4">
-              {/* User info header */}
               <div className="flex items-center gap-2">
                 <Avatar>
                   <AvatarImage src={profileImageUrl} />
@@ -91,9 +88,7 @@ function Navbar() {
                   <p className="text-muted-foreground text-sm">{user.email}</p>
                 </div>
               </div>
-
               <Separator />
-
               <div className="grid gap-2">
                 <Link
                   to="/dashboard/settings"
@@ -101,7 +96,6 @@ function Navbar() {
                 >
                   <Settings size={16} /> Account Settings
                 </Link>
-
                 <Button
                   disabled={isPending}
                   variant="destructive"

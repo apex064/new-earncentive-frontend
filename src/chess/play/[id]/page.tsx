@@ -2,9 +2,9 @@
 
 'use client';
 
-import dynamic from 'next/dynamic'
+import { lazy } from 'react'
 import { useMemo, useState, useEffect } from 'react'
-import { useParams, useSearchParams, useRouter } from 'next/navigation'
+import { useParams, useSearch, useNavigate } from '@tanstack/react-router'
 import { useGame } from '@/hooks/useGame'
 import { useUser } from '@/hooks/useUser'
 import { useChessWebSocket } from '@/hooks/useChessWebSocket'
@@ -18,40 +18,37 @@ import type { ChessPosition } from '@/types/chess-position'
 import Loading from '@/components/Loading'
 import '../../styles/global.scss'
 
-const Canvas = dynamic(
-    () => import('@react-three/fiber').then(mod => mod.Canvas),
-    { ssr: false }
+const Canvas = lazy(
+    () => import('@react-three/fiber').then(mod => ({ default: mod.Canvas }))
 )
 
-const Experience = dynamic(
-    () => import('../../experience/Experience').then(mod => mod.Experience),
-    { ssr: false }
+const Experience = lazy(
+    () => import('../../experience/Experience').then(mod => ({ default: mod.Experience }))
 )
 
-const Controls = dynamic(
-    () => import('../../controls/Controls').then(mod => mod.Controls),
-    { ssr: false }
+const Controls = lazy(
+    () => import('../../controls/Controls').then(mod => ({ default: mod.Controls }))
 )
 
 export default function PlayPage() {
     const params = useParams()
-    const router = useRouter()
-    const searchParams = useSearchParams()
+    const navigate = useNavigate()
+    const search = useSearch({ strict: false })
     const gameId = params.id as string
     const [viewMode, setViewMode] = useState<'3d' | '2d'>('3d') // Default to 3D
     const [forceStartAttempted, setForceStartAttempted] = useState(false)
-    
-    const isSpectator = searchParams.get('spectator') === 'true'
+
+    const isSpectator = search.spectator === 'true'
 
     const { mounted, userToken, userName } = useUser()
     const [game, gameActions] = useGame()
-    
-    const { 
-        isVsBot, 
-        gameOver, 
-        result, 
+
+    const {
+        isVsBot,
+        gameOver,
+        result,
         myColor,
-        wsConnected, 
+        wsConnected,
         ping,
         opponentLeft,
         spectatorCount,
@@ -60,20 +57,20 @@ export default function PlayPage() {
         sendMove,
         setGameOver,
         setResult
-    } = useChessWebSocket({ 
-        gameId, 
-        userToken, 
-        userName, 
+    } = useChessWebSocket({
+        gameId,
+        userToken,
+        userName,
         gameActions,
         isSpectator: false
     })
-    
+
     // Force start game on mount
     useEffect(() => {
         if (!forceStartAttempted) {
             console.log('🚀 Force starting game on mount...')
             setForceStartAttempted(true)
-            
+
             const timer = setTimeout(() => {
                 if (!game.fen || game.fen === 'start' || game.situation === 'inactive') {
                     console.log('🎮 Starting fresh game...')
@@ -81,11 +78,11 @@ export default function PlayPage() {
                     gameActions.forceActive()
                 }
             }, 100)
-            
+
             return () => clearTimeout(timer)
         }
     }, [forceStartAttempted, game.fen, game.situation, gameActions])
-    
+
     // Force game to active when WebSocket connects
     useEffect(() => {
         if (wsConnected && game.fen && game.situation === 'inactive') {
@@ -93,7 +90,7 @@ export default function PlayPage() {
             gameActions.forceActive()
         }
     }, [wsConnected, game.fen, game.situation, gameActions])
-    
+
     // Check periodically if board needs to be activated
     useEffect(() => {
         const interval = setInterval(() => {
@@ -109,10 +106,10 @@ export default function PlayPage() {
                 }
             }
         }, 1000)
-        
+
         return () => clearInterval(interval)
     }, [game.fen, game.situation, game.white, game.black, gameActions, forceStartAttempted])
-    
+
     const { manualRenderBoard } = useBoardManager(gameActions, mounted)
     const { handleMove: handle3DMove } = useMoveHandler(gameActions, isVsBot, sendMove, game.fen)
 
@@ -142,7 +139,7 @@ export default function PlayPage() {
     }, [game, myColor, isGameActive, wsConnected])
 
     if (isSpectator) {
-        router.push(`/game/spectate/${gameId}`)
+        navigate({ to: `/game/spectate/${gameId}` })
         return <Loading />
     }
 
@@ -165,7 +162,7 @@ export default function PlayPage() {
                 </div>
             )}
 
-            <button 
+            <button
                 onClick={() => setViewMode(viewMode === '3d' ? '2d' : '3d')}
                 className="view-toggle-btn"
                 title={viewMode === '3d' ? 'Switch to 2D View' : 'Switch to 3D View'}
@@ -174,8 +171,8 @@ export default function PlayPage() {
                 <span>{viewMode === '3d' ? '2D View' : '3D View'}</span>
             </button>
 
-            <Controls 
-                game={game} 
+            <Controls
+                game={game}
                 gameActions={gameActions}
                 myColor={myColor}
                 isVsBot={isVsBot}
@@ -191,8 +188,8 @@ export default function PlayPage() {
 
             {viewMode === '3d' ? (
                 <Canvas>
-                    <Experience 
-                        game={game} 
+                    <Experience
+                        game={game}
                         onMove={handle3DMove}
                         myColor={myColor}
                         gameActions={gameActions}
@@ -201,7 +198,7 @@ export default function PlayPage() {
                 </Canvas>
             ) : (
                 <div className="board-2d-wrapper">
-                    <Board2D 
+                    <Board2D
                         game={game}
                         onMove={handle2DMove}
                         myColor={myColor}

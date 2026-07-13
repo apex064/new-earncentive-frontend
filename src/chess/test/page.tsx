@@ -1,20 +1,18 @@
 'use client'
-import dynamic from 'next/dynamic'
+import { lazy } from 'react'
 import { useState, useEffect, useMemo, useCallback } from 'react'
 import { API_BASE_URL } from '@/lib/config'
 
-import '../styles/global.scss'
+import '@/chess/styles/global.scss'
 import { useGame, MoveResult } from '@/hooks/useGame'
-import { Controls } from '../controls/Controls'
+import { Controls } from '@/chess/controls/Controls'
 
-const Canvas = dynamic(
-  () => import('@react-three/fiber').then(mod => mod.Canvas),
-  { ssr: false }
+const Canvas = lazy(
+  () => import('@react-three/fiber').then(mod => ({ default: mod.Canvas }))
 )
 
-const Experience = dynamic(
-  () => import('../experience/Experience').then(mod => mod.Experience),
-  { ssr: false }
+const Experience = lazy(
+  () => import('../experience/Experience').then(mod => ({ default: mod.Experience }))
 )
 
 const WS_BASE_URL = 'wss://api.earnquestapp.com'

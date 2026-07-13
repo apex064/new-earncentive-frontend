@@ -1,10 +1,9 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { useParams, useRouter } from 'next/navigation'
+import { useParams, useNavigate } from '@tanstack/react-router'
 import { API_BASE_URL } from '@/lib/config'
-import ''
-import '../../styles/global.scss'
+import '@/chess/styles/global.scss'
 
 const WS_BASE_URL = 'wss://api.earnquestapp.com'
 
@@ -20,9 +19,9 @@ type LobbyState = {
 
 export default function ReadyPage() {
     const params = useParams()
-    const router = useRouter()
+    const navigate = useNavigate()
     const lobbyId = params.id as string
-    
+
     const [mounted, setMounted] = useState(false)
     const [userToken, setUserToken] = useState<string>('')
     const [username, setUsername] = useState<string>('')
@@ -67,7 +66,7 @@ export default function ReadyPage() {
         }
 
         fetchLobby()
-        
+
         const interval = setInterval(fetchLobby, 3000)
         return () => clearInterval(interval)
     }, [userToken, lobbyId, username])
@@ -98,7 +97,7 @@ export default function ReadyPage() {
             if (data.type === 'lobby_update') {
                 if (data.action === 'player_joined') {
                     console.log('Player joined:', data.player)
-                    setLobby((prev) => 
+                    setLobby((prev) =>
                         prev ? {
                             ...prev,
                             opponent: data.player,
@@ -106,7 +105,7 @@ export default function ReadyPage() {
                         } : null
                     )
                 }
-                
+
                 if (data.action === 'player_ready') {
                     setLobby((prev) =>
                         prev ? {
@@ -115,7 +114,7 @@ export default function ReadyPage() {
                             opponent_ready: data.opponent_ready ?? prev.opponent_ready,
                         } : null
                     )
-                    
+
                     if (data.player === username) {
                         setIsReady(true)
                     }
@@ -124,10 +123,10 @@ export default function ReadyPage() {
                 if (data.action === 'countdown_start') {
                     setCountdown(data.countdown_seconds)
                 }
-                
+
                 if (data.action === 'game_started') {
                     console.log('Game started! Redirecting to game:', data.game_id)
-                    router.push(`/chess/play/${data.game_id}`)
+                    navigate({ to: `/chess/play/${data.game_id}` })
                 }
             }
         }
@@ -141,7 +140,7 @@ export default function ReadyPage() {
                 websocket.close()
             }
         }
-    }, [userToken, lobbyId, username, lobby?.opponent, isReady, router])
+    }, [userToken, lobbyId, username, lobby?.opponent, isReady, navigate])
 
     useEffect(() => {
         if (countdown === null || countdown <= 0) return
@@ -219,7 +218,7 @@ export default function ReadyPage() {
                                     <p className="text-warning">⏳ Waiting for opponent to join...</p>
                                 </div>
                             )}
-                            
+
                             {hasOpponent && !amIReady && (
                                 <button
                                     onClick={toggleReady}
@@ -228,7 +227,7 @@ export default function ReadyPage() {
                                     🎯 Click to Ready
                                 </button>
                             )}
-                            
+
                             {hasOpponent && amIReady && (
                                 <div className="bg-success/10 border border-success/30 rounded-lg p-4 text-center">
                                     <p className="text-success">✅ Ready! Waiting for opponent...</p>

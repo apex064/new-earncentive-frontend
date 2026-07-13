@@ -1,0 +1,208 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Lora:ital,wght@0,400..700;1,400..700&family=Space+Grotesk:wght@300..700&family=Space+Mono:ital,wght@0,400;0,700;1,400;1,700&display=swap");
+@import "tailwindcss";
+@import "tw-animate-css";
+@plugin "@tailwindcss/typography";
+
+/* @custom-variant dark (&:is(.dark *)); */
+
+code {
+  font-family:
+    source-code-pro, Menlo, Monaco, Consolas, "Courier New", monospace;
+}
+
+:root {
+  --radius: 1rem;
+
+  --background: oklch(0.1 0.01 291);
+  --foreground: oklch(0.98 0.005 291);
+
+  /* --- SURFACES --- */
+  --card: oklch(0.14 0.015 291);
+  --card-foreground: oklch(0.98 0.005 291);
+
+  --popover: oklch(0.14 0.015 291);
+  --popover-foreground: oklch(0.98 0.005 291);
+
+  /* --- PRIMARY --- */
+  --primary: oklch(42.564% 0.20379 291.02);
+  --primary-foreground: oklch(1 0 0);
+
+  /* --- SECONDARY --- */
+  --secondary: oklch(0.2 0.04 285);
+  --secondary-foreground: oklch(0.98 0.01 260);
+
+  /* --- MUTED --- */
+  --muted: oklch(0.18 0.01 291);
+  --muted-foreground: oklch(0.65 0.01 291);
+
+  /* --- ACCENTS --- */
+  --accent: oklch(0.2 0.02 291);
+  --accent-foreground: oklch(0.98 0.01 291);
+
+  /* --- BORDERS --- */
+  --border: oklch(0.22 0.015 291);
+  --input: oklch(0.22 0.015 291);
+  --ring: oklch(42.564% 0.20379 291.02);
+
+  /* --- STATES --- */
+  --destructive: oklch(0.55 0.22 26);
+  --destructive-foreground: oklch(1 0 0);
+
+  /* --- CHARTS --- */
+  --chart-1: oklch(0.6 0.18 291);
+  --chart-2: oklch(0.65 0.15 180);
+  --chart-3: oklch(0.7 0.15 45);
+  --chart-4: oklch(0.6 0.16 320);
+  --chart-5: oklch(0.65 0.14 240);
+
+  /* --- SIDEBAR --- */
+  --sidebar: oklch(0.11 0.012 291);
+  --sidebar-foreground: var(--foreground);
+  --sidebar-primary: var(--primary);
+  --sidebar-primary-foreground: var(--primary-foreground);
+  --sidebar-accent: var(--secondary);
+  --sidebar-accent-foreground: var(--secondary-foreground);
+  --sidebar-border: oklch(0.18 0.015 291);
+  --sidebar-ring: var(--ring);
+
+  --font-base: "Space Grotesk", sans-serif;
+  --font-heading: "Inter", sans-serif;
+  --font-serif: "Lora", serif;
+  --font-mono: "Space Mono", monospace;
+  --tracking-normal: -0.025em;
+  --spacing: 0.27rem;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+
+  --font-base: var(--font-base);
+  --font-heading: var(--font-heading);
+  --font-mono: var(--font-mono);
+  --font-serif: var(--font-serif);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+    scrollbar-width: thin;
+    scrollbar-color: var(--border) transparent;
+  }
+
+  body {
+    @apply bg-background text-foreground font-base;
+    letter-spacing: var(--tracking-normal);
+    background-image: radial-gradient(
+      circle at 50% 0%,
+      oklch(0.15 0.03 291 / 0.5) 0%,
+      transparent 80%
+    );
+    background-attachment: fixed;
+    min-height: 100vh;
+  }
+
+  button {
+    cursor: pointer;
+  }
+
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background-color: var(--border);
+    border-radius: 20px;
+    border: 2px solid transparent;
+    background-clip: content-box;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background-color: var(--muted-foreground);
+  }
+}
+
+@layer components {
+  /* THE MODERN PLATE
+     Much smoother gradient. It looks like polished metal/glass 
+     rather than a dark hole.
+  */
+  .card_gradient {
+    background: linear-gradient(
+      180deg,
+      oklch(0.18 0.02 291 / 0.7) 0%,
+      oklch(0.14 0.015 291 / 0.8) 100%
+    );
+
+    box-shadow: inset 0 1px 0 0 oklch(1 0 0 / 0.05);
+
+    @apply border border-white/5 backdrop-blur-md;
+    @apply transition-all duration-300 ease-in-out;
+  }
+
+  .card_gradient:hover {
+    background: linear-gradient(
+      180deg,
+      oklch(0.2 0.02 291 / 0.8) 0%,
+      oklch(0.15 0.02 291 / 0.9) 100%
+    );
+    box-shadow:
+      inset 0 1px 0 0 oklch(1 0 0 / 0.1),
+      0 10px 20px -10px oklch(0 0 0 / 0.3);
+    transform: translateY(-2px);
+
+    @apply border-primary/20;
+  }
+}
+
+@utility bg-hero-grad {
+  background: linear-gradient(
+    to bottom,
+    transparent 0%,
+    oklch(0.12 0.02 291) 40%,
+    var(--primary) 100%
+  );
+}
+
+@utility bg-about-grad {
+  background: linear-gradient(
+    to bottom right,
+    oklch(0.1 0.01 291) 0%,
+    oklch(0.16 0.04 291) 100%
+  );
+}

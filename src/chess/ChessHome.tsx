@@ -10,13 +10,13 @@ const Canvas = lazy(() =>
 );
 
 const Experience = lazy(() =>
-  import("@/chess/experience/Experience").then((mod) => ({
+  import("@/chess/Experience").then((mod) => ({
     default: mod.Experience,
   }))
 );
 
 const Controls = lazy(() =>
-  import("@/chess/controls/Controls").then((mod) => ({
+  import("@/chess/Controls").then((mod) => ({
     default: mod.Controls,
   }))
 );

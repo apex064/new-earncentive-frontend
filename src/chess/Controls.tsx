@@ -6,11 +6,11 @@ import { faArrowsRotate, faChessBoard, faSignal, faUserSlash, faSpinner, faEye }
 import { toast } from 'sonner'
 import { GameActions } from '@/hooks/useGame'
 import { GameStatus } from '@/types/game-status'
-import { Data } from './components/Data'
-import { Options } from './components/Options'
-import { StartMenu } from './components/StartMenu'
-import { EndMenu } from './components/EndMenu'
-import { CapturedPieces } from './components/CapturedPieces'
+import { Data } from './controls-components/Data'
+import { Options } from './controls-components/Options'
+import { StartMenu } from './controls-components/StartMenu'
+import { EndMenu } from './controls-components/EndMenu'
+import { CapturedPieces } from './controls-components/CapturedPieces'
 
 type ControlsProps = {
     game: GameStatus
@@ -27,13 +27,13 @@ type ControlsProps = {
     getPingStatus?: () => string
 }
 
-export function Controls({ 
-    game, 
-    gameActions, 
-    myColor, 
-    isVsBot, 
-    wsConnected, 
-    gameId, 
+export function Controls({
+    game,
+    gameActions,
+    myColor,
+    isVsBot,
+    wsConnected,
+    gameId,
     onShowBoard,
     ping,
     opponentLeft = false,
@@ -114,15 +114,15 @@ export function Controls({
                             <span className="game-id">ID: {gameId}</span>
                         </div>
                         <div className="action-buttons">
-                            <button 
-                                onClick={onShowBoard} 
+                            <button
+                                onClick={onShowBoard}
                                 className="icon-btn"
                                 title="Show Board"
                             >
                                 <FontAwesomeIcon icon={faChessBoard} />
                             </button>
-                            <button 
-                                onClick={gameActions.reset} 
+                            <button
+                                onClick={gameActions.reset}
                                 className="icon-btn"
                                 title="Reset Board"
                             >
@@ -138,7 +138,7 @@ export function Controls({
                                 {myColor === 'white' ? 'White' : 'Black'}
                             </span>
                         </div>
-                        
+
                         <div className="status-item">
                             <span className="label">Turn</span>
                             <span className={`color-badge ${game.turn}`}>
@@ -171,7 +171,7 @@ export function Controls({
                                     Playing vs Bot
                                 </div>
                             )}
-                            
+
                             {/* Spectator Count Display */}
                             {spectatorCount > 0 && (
                                 <div className="spectator-count" title={`${spectatorCount} spectator${spectatorCount !== 1 ? 's' : ''} watching`}>
@@ -180,7 +180,7 @@ export function Controls({
                                     <span className="spectator-label">watching</span>
                                 </div>
                             )}
-                            
+
                             {/* Ping Display */}
                             <div className="ping-display" title={`${getPingStatus()} ping - ${ping !== null ? `${ping}ms` : 'measuring...'}`}>
                                 <FontAwesomeIcon icon={ping !== null ? faSignal : faSpinner} style={{ color: getPingColor() }} />
@@ -190,7 +190,7 @@ export function Controls({
                                 <span className="ping-status">{getPingStatus()}</span>
                             </div>
                         </div>
-                        
+
                         <div className={`connection-status ${wsConnected ? 'connected' : 'connecting'}`}>
                             <span className="status-dot"></span>
                             <span>{wsConnected ? 'Connected' : 'Connecting'}</span>
@@ -222,11 +222,11 @@ export function Controls({
                     <Options gameActions={gameActions} />
                 </>
             )}
-            
+
             {!isGameStart && !isGameEnded && !opponentLeft && (
                 <StartMenu gameActions={gameActions} />
             )}
-            
+
             {isGameEnded && <EndMenu gameActions={gameActions} />}
         </div>
     )

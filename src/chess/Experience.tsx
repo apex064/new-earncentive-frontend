@@ -1,7 +1,7 @@
 // experience/Experience.tsx
 import { Html, OrbitControls } from '@react-three/drei'
 import { Lights } from './Lights'
-import { GameBoard } from './meshes/board/GameBoard'
+import { GameBoard } from './meshes/GameBoard'
 import { Game } from './meshes/Game'
 import { pieceUtils } from '@/utils/pieceUtils'
 import { ChessPosition } from '@/types/chess-position'
@@ -31,12 +31,12 @@ function isPawnPromotionMove(piece: PieceData, to: ChessPosition): boolean {
     return false
 }
 
-export function Experience({ 
-    game, 
-    gameActions, 
-    onMove, 
-    myColor = 'white', 
-    isSpectator = false 
+export function Experience({
+    game,
+    gameActions,
+    onMove,
+    myColor = 'white',
+    isSpectator = false
 }: ExperienceProps) {
     const [selectedPiece, setSelectedPiece] = useState<PieceData | null>(null)
     const [promotionPick, setPromotionPick] = useState<{
@@ -60,13 +60,13 @@ export function Experience({
     const toggleSelectedPiece = useCallback((pieceData: PieceData) => {
         // Spectators cannot select pieces
         if (isSpectator) return
-        
+
         // Only allow selecting your own pieces
         if (myColor !== 'spectator' && pieceData.rival !== myColor) {
             // Optional: Add a visual feedback that you can't select opponent's pieces
             return
         }
-        
+
         if (
             selectedPiece &&
             selectedPiece.file === pieceData.file &&
@@ -95,14 +95,14 @@ export function Experience({
     const movePiece = useCallback(
         (position: ChessPosition) => {
             if (!selectedPiece || isSpectator) return
-            
+
             // Additional check: make sure it's your turn
             const isMyTurn = (myColor !== 'spectator' && game.turn === myColor)
             if (!isMyTurn) {
                 // Optional: Add visual feedback that it's not your turn
                 return
             }
-            
+
             if (isPawnPromotionMove(selectedPiece, position)) {
                 setPromotionPick({ piece: selectedPiece, position })
                 return
@@ -122,21 +122,21 @@ export function Experience({
                 enableDamping={false}
             />
             <Lights />
-            
-            <GameBoard 
-                movePiece={movePiece} 
-                moves={moves} 
-                lastMove={game.lastMove} 
-                isSpectator={isSpectator} 
+
+            <GameBoard
+                movePiece={movePiece}
+                moves={moves}
+                lastMove={game.lastMove}
+                isSpectator={isSpectator}
             />
-            
+
             <Game
                 selectedPiece={selectedPiece}
                 status={game}
                 onPieceClick={toggleSelectedPiece}
                 isSpectator={isSpectator}
             />
-            
+
             {/* Promotion modal - only for non-spectators */}
             {promotionPick && !isSpectator && (
                 <Html position={[0, 3.4, 0]} center zIndexRange={[200, 0]}>
@@ -217,7 +217,7 @@ export function Experience({
                     </div>
                 </Html>
             )}
-            
+
             {/* Spectator indicator in 3D view */}
             {isSpectator && (
                 <Html position={[0, 4.5, 0]} center>

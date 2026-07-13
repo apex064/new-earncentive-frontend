@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import ChessHome from "@/chess/page";
+import ChessHome from "@/chess/ChessHome";
 
 export const Route = createFileRoute("/dashboard/")({
   component: ChessHome,

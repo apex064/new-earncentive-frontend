@@ -10,24 +10,24 @@ import { useUser } from '@/hooks/useUser'
 import { useChessWebSocket } from '@/hooks/useChessWebSocket'
 import { useBoardManager } from '@/hooks/useBoardManager'
 import { useMoveHandler } from '@/hooks/useMoveHandler'
-import { Board2D } from '@/components/Board2D'
+import { Board2D } from '@/components/chess/Board2D'
 import { LayoutGrid, Box } from 'lucide-react'
 import type { PromotionPiece } from '@/hooks/useMoveHandler'
 import type { PieceData } from '@/types/piece-data'
 import type { ChessPosition } from '@/types/chess-position'
-import Loading from '@/components/Loading'
-import '../../styles/global.scss'
+import Loading from '@/components/ui/loading'
+import '@/chess/styles/global.scss'
 
 const Canvas = lazy(
     () => import('@react-three/fiber').then(mod => ({ default: mod.Canvas }))
 )
 
 const Experience = lazy(
-    () => import('../../experience/Experience').then(mod => ({ default: mod.Experience }))
+    () => import('@/chess/Experience').then(mod => ({ default: mod.Experience }))
 )
 
 const Controls = lazy(
-    () => import('../../controls/Controls').then(mod => ({ default: mod.Controls }))
+    () => import('@/chess/Controls').then(mod => ({ default: mod.Controls }))
 )
 
 export default function PlayPage() {

@@ -5,7 +5,7 @@ import { API_BASE_URL } from '@/lib/config'
 
 import '@/chess/styles/global.scss'
 import { useGame, MoveResult } from '@/hooks/useGame'
-import { Controls } from '@/chess/controls/Controls'
+import { Controls } from '@/chess/Controls'
 
 const Canvas = lazy(
   () => import('@react-three/fiber').then(mod => ({ default: mod.Canvas }))

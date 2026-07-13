@@ -2,15 +2,15 @@ import { usePiecePosition } from '@/hooks/usePiecePosition'
 import { ChessFile } from '@/types/chess-file'
 import { ChessRank } from '@/types/chess-rank'
 import { useMemo, useState } from 'react'
-import { pieceUtils } from '../../utils/pieceUtils'
+import { pieceUtils } from '@/utils/pieceUtils'
 import { Rival } from '@/types/rival'
 import { PieceModelProps } from '@/types/piece-model-props'
-import { King } from './pieces/King'
-import { Queen } from './pieces/Queen'
-import { Bishop } from './pieces/Bishop'
-import { Knight } from './pieces/Knight'
-import { Rook } from './pieces/Rook'
-import { Pawn } from './pieces/Pawn'
+import { King } from './King'
+import { Queen } from './Queen'
+import { Bishop } from './Bishop'
+import { Knight } from './Knight'
+import { Rook } from './Rook'
+import { Pawn } from './Pawn'
 import * as THREE from 'three'
 import { PieceStatus } from '@/types/piece-status'
 import { PieceData } from '@/types/piece-data'
@@ -32,25 +32,25 @@ export function Piece({
     onPieceClick,
 }: PieceProps) {
     const [isHovered, setIsHovered] = useState(false)
-    
+
     const chessPosition = useMemo(() => {
         return {
             rank,
             file,
         }
     }, [rank, file])
-    
+
     const { x, z } = usePiecePosition(chessPosition, true)
     const addToY = useAddToY(isSelected)
-    
+
     const props: PieceModelProps = useMemo(() => {
         const { positionY, scale } = pieceUtils.getPieceStats(piece)
-        
+
         // Special pieces (King and Queen) get extra glow
         const isSpecialPiece = piece === 'king' || piece === 'queen'
-        
+
         // Create premium materials with metallic finish and emissive glow
-        const material = rival === 'black' 
+        const material = rival === 'black'
             ? new THREE.MeshStandardMaterial({
                 color: '#374151',        // Dark gray instead of purple
                 metalness: 0.85,         // High metallic shine
@@ -65,7 +65,7 @@ export function Piece({
                 emissive: '#8b5cf6',     // Purple glow
                 emissiveIntensity: isSelected ? 0.45 : (isHovered ? 0.35 : (isSpecialPiece ? 0.2 : 0.15)),
               })
-        
+
         return {
             'position-x': x,
             'position-y': positionY + addToY,

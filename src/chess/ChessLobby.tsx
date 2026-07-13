@@ -1,8 +1,8 @@
 'use client'
 import { useState, useEffect } from 'react'
 import { API_BASE_URL } from '@/lib/config'
-import ''
-import '../styles/global.scss'
+import '@/chess/styles/global.scss'
+
 
 type Lobby = {
     id: string
@@ -65,7 +65,7 @@ export default function LobbyPage() {
                         'Content-Type': 'application/json',
                     },
                 })
-                
+
                 if (response.ok) {
                     const data = await response.json()
                     setLobbies(Array.isArray(data) ? data : [])
@@ -88,7 +88,7 @@ export default function LobbyPage() {
 
         setLoading(true)
         setError(null)
-        
+
         try {
             const response = await fetch(`${API_BASE_URL}/chess/lobby/${lobbyId}/join_lobby/`, {
                 method: 'POST',
@@ -118,7 +118,7 @@ export default function LobbyPage() {
 
     const createLobby = async () => {
         if (!userToken) return
-        
+
         if (createData.stake < 0 || createData.stake > 5) {
             alert('Stake must be between 0 and 5')
             return
@@ -126,7 +126,7 @@ export default function LobbyPage() {
 
         setCreating(true)
         setError(null)
-        
+
         try {
             const response = await fetch(`${API_BASE_URL}/chess/lobby/create_lobby/`, {
                 method: 'POST',
@@ -166,7 +166,7 @@ export default function LobbyPage() {
 
     const startBotGame = async () => {
         if (!userToken) return
-        
+
         if (createData.stake < 0 || createData.stake > 5) {
             alert('Stake must be between 0 and 5')
             return
@@ -174,7 +174,7 @@ export default function LobbyPage() {
 
         setCreating(true)
         setError(null)
-        
+
         try {
             const response = await fetch(`${API_BASE_URL}/chess/games/start_bot_game/`, {
                 method: 'POST',
@@ -217,8 +217,8 @@ export default function LobbyPage() {
                 {error && (
                     <div className="bg-destructive/10 border border-destructive/30 rounded-lg p-4 mb-6 flex justify-between items-center">
                         <span className="text-destructive">⚠️ {error}</span>
-                        <button 
-                            onClick={() => setError(null)} 
+                        <button
+                            onClick={() => setError(null)}
                             className="text-destructive hover:text-destructive-light transition-colors"
                         >
                             Dismiss
@@ -274,14 +274,14 @@ export default function LobbyPage() {
                 )}
 
                 <div className="flex justify-center gap-4">
-                    <button 
-                        onClick={() => setShowCreateModal(true)} 
+                    <button
+                        onClick={() => setShowCreateModal(true)}
                         className="px-6 py-3 bg-primary hover:bg-primary-dark text-white font-medium rounded-full transition-all shadow-md hover:shadow-lg"
                     >
                         Create New Lobby
                     </button>
-                    <a 
-                        href="/chess" 
+                    <a
+                        href="/chess"
                         className="px-6 py-3 bg-background border border-border hover:bg-primary/10 text-foreground font-medium rounded-full transition-all"
                     >
                         Back to Chess
@@ -294,7 +294,7 @@ export default function LobbyPage() {
                 <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-50 p-4" onClick={() => setShowCreateModal(false)}>
                     <div className="bg-card border border-border rounded-xl max-w-md w-full p-6" onClick={(e) => e.stopPropagation()}>
                         <h2 className="text-xl font-bold text-foreground text-center mb-6">Create New Lobby</h2>
-                        
+
                         <div className="space-y-4">
                             <div>
                                 <label className="block text-sm font-medium text-foreground mb-2">
@@ -341,23 +341,23 @@ export default function LobbyPage() {
                             )}
 
                             <div className="flex gap-3 pt-4">
-                                <button 
-                                    onClick={() => setShowCreateModal(false)} 
+                                <button
+                                    onClick={() => setShowCreateModal(false)}
                                     className="flex-1 px-4 py-2 bg-muted hover:bg-muted/80 text-foreground rounded-full font-medium transition-all"
                                 >
                                     Cancel
                                 </button>
                                 {createData.is_vs_bot ? (
-                                    <button 
-                                        onClick={startBotGame} 
+                                    <button
+                                        onClick={startBotGame}
                                         className="flex-1 px-4 py-2 bg-primary hover:bg-primary-dark text-white rounded-full font-medium transition-all shadow-md hover:shadow-lg"
                                         disabled={creating}
                                     >
                                         {creating ? 'Starting...' : 'Start Bot Game'}
                                     </button>
                                 ) : (
-                                    <button 
-                                        onClick={createLobby} 
+                                    <button
+                                        onClick={createLobby}
                                         className="flex-1 px-4 py-2 bg-primary hover:bg-primary-dark text-white rounded-full font-medium transition-all shadow-md hover:shadow-lg"
                                         disabled={creating}
                                     >

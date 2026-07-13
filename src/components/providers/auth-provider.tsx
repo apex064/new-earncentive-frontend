@@ -1,4 +1,5 @@
 import { type PropsWithChildren, useEffect } from "react";
+import CountryDetector from "@/components/CountryDetector";
 import Loading from "@/components/ui/loading";
 import { useUser } from "@/hooks/use-user";
 import { router } from "@/router";
@@ -23,7 +24,12 @@ function AuthProvider({ children }: PropsWithChildren) {
     return null;
   }
 
-  return <>{children}</>;
+  return (
+    <>
+      <CountryDetector />
+      {children}
+    </>
+  );
 }
 
 export default AuthProvider;

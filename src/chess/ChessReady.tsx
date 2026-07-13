@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { useParams, useNavigate } from '@tanstack/react-router'
+import { useParams, useNavigate, Link } from '@tanstack/react-router'
 import { API_BASE_URL } from '@/lib/config'
 import '@/chess/styles/global.scss'
 
@@ -126,7 +126,7 @@ export default function ReadyPage() {
 
                 if (data.action === 'game_started') {
                     console.log('Game started! Redirecting to game:', data.game_id)
-                    navigate({ to: `/chess/play/${data.game_id}` })
+                    navigate({ to: "/dashboard/chess/play/$id", params: { id: String(data.game_id) } })
                 }
             }
         }
@@ -236,12 +236,12 @@ export default function ReadyPage() {
                         </>
                     )}
 
-                    <a
-                        href="/chess/lobby"
+                    <Link
+                        to="/dashboard"
                         className="block text-center text-muted-foreground hover:text-primary transition-colors mt-4"
                     >
-                        Back to Lobbies
-                    </a>
+                        Back to Lobby
+                    </Link>
                 </div>
             </div>
         </div>

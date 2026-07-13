@@ -16,6 +16,7 @@ import { useLogoutMutation } from "@/hooks/use-auth-mutations";
 import { useUser } from "@/hooks/use-user";
 import { resolveProfileImageUrl } from "@/lib/fix-image-url";
 import { getInitials } from "@/lib/get-name-initials";
+import { useNotifications } from "@/hooks/use-notifications";
 import { NavbarSkeleton } from "./navbar-skeleton";
 import {
   BalancePill,
@@ -26,6 +27,8 @@ function Navbar() {
   const { data: userResponse, isLoading } = useUser();
   const user = userResponse?.data;
   const { mutate: logout, isPending } = useLogoutMutation();
+  const { data: notifData } = useNotifications("all");
+  const unreadCount = notifData?.results?.filter((n) => !n.is_read).length ?? 0;
 
   const profileImageUrl = resolveProfileImageUrl(
     user?.profile_picture_url ?? null,
@@ -64,7 +67,7 @@ function Navbar() {
         </Popover>
 
         {/* Mobile sidebar trigger (notifications, calendar) */}
-        <MobileSecondarySidebar />
+        <MobileSecondarySidebar unreadCount={unreadCount} />
 
         {/* Profile Avatar + Dropdown */}
         <Popover>

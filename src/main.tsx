@@ -5,6 +5,7 @@ import "./styles.css";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import App from "@/app.tsx";
 import AuthProvider from "@/components/providers/auth-provider.tsx";
+import { FingerprintProvider } from "@/contexts/FingerprintContext";
 import { queryClient } from "@/lib/react-query.ts";
 import "./router";
 // import reportWebVitals from "./reportWebVitals.ts";
@@ -18,11 +19,13 @@ if (rootElement && !rootElement.innerHTML) {
   root.render(
     <StrictMode>
       <GoogleOAuthProvider clientId={googleClientId}>
-        <TanStackQueryProvider.Provider queryClient={queryClient}>
-          <AuthProvider>
-            <App />
-          </AuthProvider>
-        </TanStackQueryProvider.Provider>
+        <FingerprintProvider>
+          <TanStackQueryProvider.Provider queryClient={queryClient}>
+            <AuthProvider>
+              <App />
+            </AuthProvider>
+          </TanStackQueryProvider.Provider>
+        </FingerprintProvider>
       </GoogleOAuthProvider>
     </StrictMode>,
   );

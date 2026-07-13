@@ -4,7 +4,7 @@
 
 import { lazy } from 'react'
 import { useMemo, useState, useEffect } from 'react'
-import { useParams, useSearch, useNavigate } from '@tanstack/react-router'
+import { useParams, useSearch, useNavigate, Link } from '@tanstack/react-router'
 import { useGame } from '@/hooks/useGame'
 import { useUser } from '@/hooks/useUser'
 import { useChessWebSocket } from '@/hooks/useChessWebSocket'
@@ -31,14 +31,14 @@ const Controls = lazy(
 )
 
 export default function PlayPage() {
-    const params = useParams()
+    const params = useParams({ strict: false })
     const navigate = useNavigate()
     const search = useSearch({ strict: false })
-    const gameId = params.id as string
+    const gameId = (params as any).id as string
     const [viewMode, setViewMode] = useState<'3d' | '2d'>('3d') // Default to 3D
     const [forceStartAttempted, setForceStartAttempted] = useState(false)
 
-    const isSpectator = search.spectator === 'true'
+    const isSpectator = (search as any).spectator === 'true'
 
     const { mounted, userToken, userName } = useUser()
     const [game, gameActions] = useGame()
@@ -139,7 +139,7 @@ export default function PlayPage() {
     }, [game, myColor, isGameActive, wsConnected])
 
     if (isSpectator) {
-        navigate({ to: `/game/spectate/${gameId}` })
+        navigate({ to: "/dashboard/chess/play/$id", params: { id: gameId }, search: { spectator: "true" } as any })
         return <Loading />
     }
 
@@ -152,12 +152,12 @@ export default function PlayPage() {
                     <div className="game-end-card">
                         <h2>Game Over!</h2>
                         <p className="result">{result?.replace('_', ' ').toUpperCase()}</p>
-                        <a href="/tasks" className="btn-restart">
+                        <Link to="/dashboard" className="btn-restart">
                             Play Again
-                        </a>
-                        <a href="/tasks" className="btn-lobby">
+                        </Link>
+                        <Link to="/dashboard" className="btn-lobby">
                             Browse Lobbies
-                        </a>
+                        </Link>
                     </div>
                 </div>
             )}

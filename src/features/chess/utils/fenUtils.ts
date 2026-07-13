@@ -25,15 +25,15 @@ function pieceId(piece: PieceStatus, rival: Rival): string {
 
 function deriveSituation(chess: Chess): GameSituation {
     console.log('🔍 deriveSituation called, checking game state...')
-    
+
     try {
-        const isCheckmate = chess.isCheckmate?.() ?? chess.in_checkmate?.() ?? false
-        const isStalemate = chess.isStalemate?.() ?? chess.in_stalemate?.() ?? false
-        const isThreefoldRepetition = chess.isThreefoldRepetition?.() ?? chess.in_threefold_repetition?.() ?? false
-        const isInsufficientMaterial = chess.isInsufficientMaterial?.() ?? chess.insufficient_material?.() ?? false
-        const isDraw = chess.isDraw?.() ?? chess.in_draw?.() ?? false
-        const isCheck = chess.isCheck?.() ?? chess.in_check?.() ?? false
-        
+        const isCheckmate = chess.isCheckmate()
+        const isStalemate = chess.isStalemate()
+        const isThreefoldRepetition = chess.isThreefoldRepetition()
+        const isInsufficientMaterial = chess.isInsufficientMaterial()
+        const isDraw = chess.isDraw()
+        const isCheck = chess.isCheck()
+
         if (isCheckmate) {
             console.log('🏁 Game is in CHECKMATE')
             return 'checkmate'
@@ -61,23 +61,23 @@ function deriveSituation(chess: Chess): GameSituation {
     } catch (error) {
         console.error('Error in deriveSituation:', error)
     }
-    
+
     console.log('✅ Game is ACTIVE')
     return 'active'
 }
 
 /**
- * Ensures FEN strings always contain all 6 required segments 
+ * Ensures FEN strings always contain all 6 required segments
  * to pass strict validation in modern chess.js versions.
  */
 function cleanFenString(fen: string): string {
     if (!fen) return STANDARD_START_FEN
-    
+
     let cleanFen = fen.trim()
     if (cleanFen === 'start') return STANDARD_START_FEN
-    
+
     const parts = cleanFen.split(/\s+/)
-    
+
     // Validate structural rows integrity
     const rows = parts[0].split('/')
     if (rows.length !== 8) {
@@ -92,21 +92,21 @@ function cleanFenString(fen: string): string {
     const enPassant = parts[3] || '-'
     const halfmove = parts[4] || '0'
     const fullmove = parts[5] || '1'
-    
+
     return `${position} ${turn} ${castling} ${enPassant} ${halfmove} ${fullmove}`
 }
 
 export function getGameStatusFromFen(fen: string): GameStatus {
     console.log('📊 getGameStatusFromFen called with FEN:', fen?.substring(0, 50))
-    
+
     if (!fen) {
         console.error('❌ No FEN provided to getGameStatusFromFen')
         return createDefaultStatus()
     }
-    
+
     const cleanFen = cleanFenString(fen)
     console.log('🧹 Cleaned FEN:', cleanFen)
-    
+
     let chess: Chess
     try {
         // FIX: Instantiate via constructor to avoid core .load validation quirks
@@ -137,7 +137,7 @@ export function getGameStatusFromFen(fen: string): GameStatus {
             const type = pieceMap[square.type]
             const rival: Rival = square.color === 'w' ? 'white' : 'black'
             const piece: PieceStatus = {
-                id: pieceId({ type, rank: rankNumber, file, isMoved: false }, rival),
+                id: pieceId({ type, rank: rankNumber, file, isMoved: true }, rival),
                 type,
                 rank: rankNumber,
                 file,
@@ -152,6 +152,7 @@ export function getGameStatusFromFen(fen: string): GameStatus {
         }
     }
 
+    // Build captured pieces arrays
     const initialCounts = {
         white: { king: 1, queen: 1, rook: 2, bishop: 2, knight: 2, pawn: 8 },
         black: { king: 1, queen: 1, rook: 2, bishop: 2, knight: 2, pawn: 8 }
@@ -162,8 +163,8 @@ export function getGameStatusFromFen(fen: string): GameStatus {
         black: { king: 0, queen: 0, rook: 0, bishop: 0, knight: 0, pawn: 0 }
     }
 
-    whitePieces.forEach(piece => currentCounts.white[piece.type]++)
-    blackPieces.forEach(piece => currentCounts.black[piece.type]++)
+    for (const p of whitePieces) currentCounts.white[p.type]++
+    for (const p of blackPieces) currentCounts.black[p.type]++
 
     const capturedByWhite: PieceStatus[] = []
     const capturedByBlack: PieceStatus[] = []
@@ -196,7 +197,7 @@ export function getGameStatusFromFen(fen: string): GameStatus {
 
     const outFen = chess.fen()
     const situation = deriveSituation(chess)
-    
+
     const gameStatus: GameStatus = {
         turn: chess.turn() === 'w' ? 'white' : 'black',
         white: { pieces: whitePieces },
@@ -206,7 +207,7 @@ export function getGameStatusFromFen(fen: string): GameStatus {
         capturedByWhite,
         capturedByBlack,
     }
-    
+
     console.log('📊 Game status generated:', {
         situation: gameStatus.situation,
         turn: gameStatus.turn,
@@ -214,7 +215,7 @@ export function getGameStatusFromFen(fen: string): GameStatus {
         blackPieces: blackPieces.length,
         fen: outFen.substring(0, 50)
     })
-    
+
     return gameStatus
 }
 
@@ -227,7 +228,7 @@ function squareToPosition(square: Square): { file: ChessFile; rank: ChessRank } 
 export function getLegalMovesFromFen(fen: string, rival: Rival, square: Square) {
     console.log(`🔍 Getting legal moves for ${rival} at ${square}`)
     const cleanFen = cleanFenString(fen)
-    
+
     let ch: Chess
     try {
         ch = new Chess(cleanFen)
@@ -235,13 +236,13 @@ export function getLegalMovesFromFen(fen: string, rival: Rival, square: Square) 
         console.error('❌ Failed to create chess instance from FEN:', error)
         return { available: [], captures: [] }
     }
-    
+
     const piece = ch.get(square)
     if (!piece) {
         console.log('❌ No piece found at square:', square)
         return { available: [], captures: [] }
     }
-    
+
     const side = ch.turn() === 'w' ? 'white' : 'black'
     if (side !== rival || piece.color !== (rival === 'white' ? 'w' : 'b')) {
         console.log('❌ Not your turn or wrong piece color')
@@ -261,7 +262,7 @@ export function getLegalMovesFromFen(fen: string, rival: Rival, square: Square) 
         if (m.captured) captures.push(pos)
         else available.push(pos)
     }
-    
+
     console.log(`✅ Found ${available.length} available moves and ${captures.length} captures`)
     return { available, captures }
 }
@@ -292,7 +293,7 @@ export function isGameOverFromFen(fen: string): boolean {
     try {
         const cleanFen = cleanFenString(fen)
         const chess = new Chess(cleanFen)
-        return chess.isGameOver?.() ?? chess.game_over?.() ?? false
+        return chess.isGameOver()
     } catch (error) {
         console.error('Error checking game over from FEN:', error)
         return false
@@ -303,12 +304,12 @@ export function getGameResultFromFen(fen: string): string | null {
     try {
         const cleanFen = cleanFenString(fen)
         const chess = new Chess(cleanFen)
-        
-        const isCheckmate = chess.isCheckmate?.() ?? chess.in_checkmate?.() ?? false
-        const isStalemate = chess.isStalemate?.() ?? chess.in_stalemate?.() ?? false
-        const isThreefoldRepetition = chess.isThreefoldRepetition?.() ?? chess.in_threefold_repetition?.() ?? false
-        const isInsufficientMaterial = chess.isInsufficientMaterial?.() ?? chess.insufficient_material?.() ?? false
-        
+
+        const isCheckmate = chess.isCheckmate()
+        const isStalemate = chess.isStalemate()
+        const isThreefoldRepetition = chess.isThreefoldRepetition()
+        const isInsufficientMaterial = chess.isInsufficientMaterial()
+
         if (isCheckmate) {
             const winner = chess.turn() === 'w' ? 'black' : 'white'
             return `${winner}_win`

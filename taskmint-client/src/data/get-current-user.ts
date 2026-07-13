@@ -17,24 +17,13 @@ export async function getCurrentUser(): Promise<ApiResponse<User>> {
   const user: User = {
     ...data,
     fullname,
-    profileImg: data.profile_picture ?? data.profile_picture ?? undefined,
+    // Use the resolved profile_picture_url from the backend (handles Cloudinary, relative, etc.)
+    profileImg: data.profile_picture_url ?? data.profile_picture ?? undefined,
   };
 
-  // Store role flags in localStorage (matching crypt's pattern)
-  if (user.is_admin !== undefined) {
-    localStorage.setItem("is_admin", user.is_admin ? "true" : "false");
-  }
-  if (user.is_staff !== undefined) {
-    localStorage.setItem("is_staff", user.is_staff ? "true" : "false");
-  }
-  if (user.is_superuser !== undefined) {
-    localStorage.setItem("is_superuser", user.is_superuser ? "true" : "false");
-  }
-  if (user.is_moderator !== undefined) {
-    localStorage.setItem("is_moderator", user.is_moderator ? "true" : "false");
-  }
-  if (user.level) {
-    localStorage.setItem("user_level", user.level);
+  // Store role flags + level in localStorage (matching crypt's pattern)
+  if (data.level) {
+    localStorage.setItem("user_level", data.level);
   }
 
   return { success: true, message: "", data: user };

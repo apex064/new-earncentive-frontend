@@ -9,8 +9,10 @@ export function NavbarSkeleton() {
         <Separator orientation="vertical" className="mr-2 h-4!" />
         <Skeleton className="h-4 w-24" />
       </div>
-      <div className="ml-auto flex flex-1 items-center justify-end gap-4 md:justify-between">
-        <Skeleton className="hidden h-10 max-w-lg flex-1 md:block" />
+      <div className="ml-auto flex items-center gap-3">
+        {/* Balance pill placeholder */}
+        <Skeleton className="h-8 w-24 rounded-full" />
+        {/* Avatar placeholder */}
         <Skeleton className="h-10 w-10 rounded-full" />
       </div>
     </nav>

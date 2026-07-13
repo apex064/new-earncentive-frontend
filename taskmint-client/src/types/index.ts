@@ -4,7 +4,7 @@ export type ApiResponse<T> = {
   data: T;
 };
 
-// Matches rebackend's User model shape, with computed fields for taskmint UI compatibility
+// Matches rebackend's UserProfileSerializer response
 export type User = {
   id: number;
   username: string;
@@ -14,17 +14,34 @@ export type User = {
   /** Computed: first_name + last_name (for taskmint UI compatibility) */
   fullname: string;
   profile_picture?: string | null;
-  /** Alias: profile_picture (for taskmint UI compatibility) */
-  profileImg?: string;
-  is_admin: boolean;
-  is_staff: boolean;
-  is_superuser: boolean;
-  is_moderator: boolean;
-  level: string;
-  country?: string;
-  current_balance?: string;
+  /** Full URL from backend (already resolved) */
+  profile_picture_url?: string | null;
+  /** Alias for UI compatibility */
+  profileImg?: string | null;
+  phone?: string;
+  location?: string;
+  referral_code?: string;
   total_earned?: string;
-  twoFactorEnabled?: boolean;
+  current_balance?: string;
+  pending_balance?: string;
+  level?: string;
+  streak_days?: number;
+  date_joined?: string;
+  country?: string;
+  birth_date?: string;
+  gender?: string;
+  walletAddress?: string;
+  walletChain?: string;
+  referral_earnings?: string;
+  faucet_earnings?: string;
+  qualifying_earnings?: number;
+  can_withdraw?: boolean;
+  chess_rating?: number;
+  chess_games_played?: number;
+  chess_games_won?: number;
+  chess_games_lost?: number;
+  chess_games_drawn?: number;
+  chess_bot_games_played?: number;
 };
 
 export interface Meta {
